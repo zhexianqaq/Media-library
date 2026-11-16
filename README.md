@@ -98,6 +98,27 @@ CI 会自动建 Release 并上传 `douyin-gallery-v1.0.1-release.apk` / `-debug.
 
 依赖自动升级：`.github/dependabot.yml` 每周查 Gradle 依赖（androidx / kotlin / coil 分组）、每月查 Actions 版本。
 
+## 2.2 首次上传到 GitHub
+
+仓库还没建时，用自带脚本一步到位（建仓 + 推 main + 推标签）：
+
+```bash
+GH_TOKEN=ghp_xxx ./tools/push-to-github.sh                  # 公开仓库 douyin-gallery
+GH_TOKEN=ghp_xxx ./tools/push-to-github.sh my-name --private  # 私有仓库、自定义名字
+```
+
+Token 在 [Settings → Developer settings → Personal access tokens (classic)](https://github.com/settings/tokens) 新建，勾 **repo** + **workflow**（少了 workflow 会拒绝推送 `.github/workflows/`）。
+推送用的 token 只出现在这一次的 URL 里，不会写进 `.git/config`；用完建议立刻删除。
+
+也可以手动来：
+
+```bash
+git remote add origin https://github.com/<你>/douyin-gallery.git
+git push -u origin main --tags
+```
+
+推完去 `Actions` 页看第一次构建，`v*` 标签会自动产出 Release。
+
 ## 3. 权限
 
 | 系统版本 | 需要什么 | 代码位置 |
