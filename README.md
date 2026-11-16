@@ -1,7 +1,7 @@
 # 抖音解析图库（Douyin Gallery）
 
-[![Android CI](https://github.com/zhexianqaq/douyin-gallery/actions/workflows/android.yml/badge.svg)](https://github.com/zhexianqaq/douyin-gallery/actions/workflows/android.yml)
-[![Release](https://img.shields.io/github/v/release/zhexianqaq/douyin-gallery?display_name=tag&sort=semver)](https://github.com/zhexianqaq/douyin-gallery/releases/latest)
+[![Android CI](https://github.com/zhexianqaq/Media-library/actions/workflows/android.yml/badge.svg)](https://github.com/zhexianqaq/Media-library/actions/workflows/android.yml)
+[![Release](https://img.shields.io/github/v/release/zhexianqaq/Media-library?display_name=tag&sort=semver)](https://github.com/zhexianqaq/Media-library/releases/latest)
 
 「抖音解析」APK 的配套私有图库。按 **UP主 → 作品 → 文件** 浏览 `/storage/emulated/0/抖音解析/` 下的图片和视频，**全程不联网、不上传，也不让这些文件重新出现在系统相册里**。
 
@@ -103,8 +103,8 @@ CI 会自动建 Release 并上传 `douyin-gallery-v1.0.1-release.apk` / `-debug.
 仓库还没建时，用自带脚本一步到位（建仓 + 推 main + 推标签）：
 
 ```bash
-GH_TOKEN=ghp_xxx ./tools/push-to-github.sh                  # 公开仓库 douyin-gallery
-GH_TOKEN=ghp_xxx ./tools/push-to-github.sh my-name --private  # 私有仓库、自定义名字
+GH_TOKEN=ghp_xxx ./tools/push-to-github.sh                    # 推到 Media-library（默认）
+GH_TOKEN=ghp_xxx ./tools/push-to-github.sh my-name --private   # 私有仓库、自定义名字
 ```
 
 Token 在 [Settings → Developer settings → Personal access tokens (classic)](https://github.com/settings/tokens) 新建，勾 **repo** + **workflow**（少了 workflow 会拒绝推送 `.github/workflows/`）。
@@ -113,7 +113,7 @@ Token 在 [Settings → Developer settings → Personal access tokens (classic)]
 也可以手动来：
 
 ```bash
-git remote add origin https://github.com/<你>/douyin-gallery.git
+git remote add origin https://github.com/<你>/Media-library.git
 git push -u origin main --tags
 ```
 

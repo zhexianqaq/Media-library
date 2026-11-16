@@ -2,8 +2,8 @@
 # 一键把本仓库推送到 GitHub（自动建仓库 + 推送 main + 推送标签）。
 #
 # 用法：
-#   GH_TOKEN=ghp_xxx ./tools/push-to-github.sh                    # 公开仓库 douyin-gallery
-#   GH_TOKEN=ghp_xxx ./tools/push-to-github.sh my-name --private  # 私有仓库、自定义名字
+#   GH_TOKEN=ghp_xxx ./tools/push-to-github.sh                     # 推到 Media-library（默认）
+#   GH_TOKEN=ghp_xxx ./tools/push-to-github.sh my-name --private   # 私有仓库、自定义名字
 #
 # Token 要求（github.com/settings/tokens 新建 classic token）：
 #   - repo       ：建仓库 + 推送代码
@@ -12,7 +12,7 @@
 # 推送完成后建议立刻在 GitHub 上删除该 token。
 set -eu
 
-REPO_NAME=${1:-douyin-gallery}
+REPO_NAME=${1:-Media-library}
 VISIBILITY=public
 [ "${2:-}" = "--private" ] && VISIBILITY=private
 
