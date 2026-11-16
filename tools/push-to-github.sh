@@ -5,9 +5,10 @@
 #   GH_TOKEN=ghp_xxx ./tools/push-to-github.sh                     # 推到 Media-library（默认）
 #   GH_TOKEN=ghp_xxx ./tools/push-to-github.sh my-name --private   # 私有仓库、自定义名字
 #
-# Token 要求（github.com/settings/tokens 新建 classic token）：
-#   - repo       ：建仓库 + 推送代码
-#   - workflow   ：推送 .github/workflows/ 下的文件（缺这个会报 refusing to allow a Personal Access Token to create or update workflow）
+# Token 要求（二选一）：
+#   classic token（github.com/settings/tokens）：勾 repo + workflow
+#     —— workflow 少了会报 "refusing to allow a Personal Access Token to create or update workflow"
+#   fine-grained token：Repository access 选目标仓库，权限给 Contents: Read and write + Workflows: Read and write
 #
 # 推送完成后建议立刻在 GitHub 上删除该 token。
 set -eu
@@ -36,31 +37,40 @@ if [ -z "$OWNER" ]; then
 fi
 echo "→ 账号：$OWNER"
 
-# 2. 建仓库（已存在则跳过）
-CODE=$(curl -sS -o /tmp/gh-create.json -w '%{http_code}' -X POST \
-  -H "$AUTH" -H "Accept: application/vnd.github+json" \
-  "$API/user/repos" \
-  -d "{\"name\":\"$REPO_NAME\",\"description\":\"「抖音解析」配套私有图库：按 UP主 → 作品 → 文件 浏览本地抖音解析文件，全程离线、不进系统相册。\",\"private\":$([ "$VISIBILITY" = private ] && echo true || echo false),\"has_issues\":true,\"has_wiki\":false}")
+# 2. 仓库不存在才建（已存在直接推）
+EXISTS=$(curl -sS -o /dev/null -w '%{http_code}' -H "$AUTH" -H "Accept: application/vnd.github+json" \
+  "$API/repos/$OWNER/$REPO_NAME")
 
-case "$CODE" in
-  201) echo "✅ 已创建仓库：https://github.com/$OWNER/$REPO_NAME" ;;
-  422) echo "ℹ️  仓库已存在，直接推送：https://github.com/$OWNER/$REPO_NAME" ;;
-  *)   echo "❌ 建仓库失败（HTTP $CODE）：" >&2; cat /tmp/gh-create.json >&2; echo >&2
-       echo "   常见原因：token 缺 repo 权限；或团队策略禁止建仓库。" >&2
-       exit 1 ;;
-esac
+if [ "$EXISTS" = "200" ]; then
+  echo "ℹ️  仓库已存在，直接推送：https://github.com/$OWNER/$REPO_NAME"
+elif [ "$EXISTS" = "404" ]; then
+  CODE=$(curl -sS -o /tmp/gh-create.json -w '%{http_code}' -X POST \
+    -H "$AUTH" -H "Accept: application/vnd.github+json" \
+    "$API/user/repos" \
+    -d "{\"name\":\"$REPO_NAME\",\"description\":\"「抖音解析」配套私有图库：按 UP主 → 作品 → 文件 浏览本地抖音解析文件，全程离线、不进系统相册。\",\"private\":$([ "$VISIBILITY" = private ] && echo true || echo false),\"has_issues\":true,\"has_wiki\":false}")
+  case "$CODE" in
+    201) echo "✅ 已创建仓库：https://github.com/$OWNER/$REPO_NAME" ;;
+    422) echo "ℹ️  仓库已存在，直接推送" ;;
+    *)   echo "❌ 建仓库失败（HTTP $CODE）：" >&2; cat /tmp/gh-create.json >&2; echo >&2
+         echo "   常见原因：token 缺 repo 权限；或团队策略禁止建仓库。" >&2
+         exit 1 ;;
+  esac
+else
+  echo "❌ 查询仓库失败（HTTP $EXISTS），token 可能无效或无权访问该账号" >&2
+  exit 1
+fi
 
 # 3. 推送 main（token 只放在本次推送的 URL 里，不写进 .git/config）
 git remote remove origin 2>/dev/null || true
 git remote add origin "https://github.com/$OWNER/$REPO_NAME.git"
 echo "→ 推送 main ..."
-git push "https://x-access-token:$TOKEN@github.com/$OWNER/$REPO_NAME.git" main:main
+git push "https://$OWNER:$TOKEN@github.com/$OWNER/$REPO_NAME.git" main:main
 git branch --set-upstream-to=origin/main main >/dev/null 2>&1 || true
 
 # 4. 推送标签（v* 会触发 CI 自动发 Release）
 if [ -n "$(git tag -l 'v*')" ]; then
   echo "→ 推送标签（触发 CI 发版）..."
-  git push "https://x-access-token:$TOKEN@github.com/$OWNER/$REPO_NAME.git" --tags
+  git push "https://$OWNER:$TOKEN@github.com/$OWNER/$REPO_NAME.git" --tags
 fi
 
 echo
