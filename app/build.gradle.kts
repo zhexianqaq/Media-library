@@ -127,9 +127,9 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.7")
     implementation("androidx.navigation:navigation-compose:2.8.4")
 
-    implementation("io.coil-kt.coil3:coil-compose:3.0.4")
-    implementation("io.coil-kt.coil3:coil-gif:3.0.4")
-    implementation("io.coil-kt.coil3:coil-video:3.0.4")
+    implementation("io.coil-kt.coil3:coil-compose:3.6.3")
+    implementation("io.coil-kt.coil3:coil-gif:3.6.3")
+    implementation("io.coil-kt.coil3:coil-video:3.6.3")
     implementation("me.saket.telephoto:zoomable-image-coil3:0.14.0")
 
     implementation("androidx.media3:media3-exoplayer:1.5.1")
