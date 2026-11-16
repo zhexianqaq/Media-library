@@ -1,0 +1,22 @@
+*.iml
+.gradle/
+/local.properties
+/.idea/
+.kotlin/
+.DS_Store
+build/
+/captures
+.externalNativeBuild
+.cxx
+app/build/
+tools/_testdata/
+*.hprof
+
+# 签名密钥与口令（绝不进仓库）
+app/*.jks
+app/*.keystore
+*.jks
+*.keystore
+
+# 本机私有配置
+local.properties

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths>
+    <!-- 默认根目录，分享时用 content://<pkg>.files/douyin_media/... -->
+    <external-path name="douyin_media" path="抖音解析/" />
+    <!-- 用户在设置里改过根目录时兜底（仍然只能通过本 App 授予的 URI 访问） -->
+    <external-path name="sdcard" path="." />
+</paths>

@@ -1,0 +1,32 @@
+version: 2
+
+updates:
+  # Gradle 依赖（Compose / Coil / Media3 / Room 等）
+  - package-ecosystem: gradle
+    directory: "/"
+    schedule:
+      interval: weekly
+      day: monday
+      time: "09:00"
+      timezone: Asia/Shanghai
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: "deps"
+    groups:
+      androidx:
+        patterns:
+          - "androidx.*"
+      kotlin:
+        patterns:
+          - "org.jetbrains.kotlin*"
+      coil:
+        patterns:
+          - "io.coil-kt*"
+
+  # 工作流里用到的 Action 版本
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: monthly
+    commit-message:
+      prefix: "ci"
